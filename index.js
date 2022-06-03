@@ -11,6 +11,10 @@ app.get("/players", (req, res) => {
     res.send(importData);
 });
 
+app.get("/match", (req, res) => {
+    res.send(importData);
+});
+
 app.listen(port, () => {
     console.log(`Example app is listening on port http://localhost:${port}`);
 });

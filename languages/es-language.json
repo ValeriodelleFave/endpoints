@@ -1,0 +1,93 @@
+{
+    "presentationTitle": "¡Hola!<br>Soy <b>Valerio delle Fave</b>.",
+    "menuItems": [
+        {
+            "name": "Presentación",
+            "link": "#presentation",
+            "image": "../assets/icons/nav/presentation.png"
+        },
+        {
+            "name": "Sobre mí",
+            "link": "#about",
+            "image": "../assets/icons/nav/about.png"
+        },
+        {
+            "name": "Contactos",
+            "link": "#contact",
+            "image": "../assets/icons/nav/contact.png"
+        }
+    ],
+    "sections": [
+        {
+            "type": "about",
+            "title": "Sobre mí",
+            "content": [ ]
+        },
+        {
+            "type": "contact",
+            "title": "Contactos",
+            "content": [ ]
+        }
+    ],
+    "specialBullet": {
+        "title": "¿Quién es este chico?",
+        "description": "Actualmente, soy un desarrollador Front-End con sede en Roma. Tengo pasión por el mundo de las TI y me gusta desarrollar soluciones innovadoras.",
+        "image": "../assets/images/bullets/me.jpg" 
+    },
+    "bullets": [
+        {
+            "title": "Performance",
+            "description": "Supervisión y pruebas de rendimiento.",
+            "image": "../assets/images/bullets/performance.png"
+        },
+        {
+            "title": "Adaptación",
+            "description": "Visible en cualquier dispositivo.",
+            "image": "../assets/images/bullets/adaptation.png"
+        },
+        {
+            "title": "Curiosidad",
+            "description": "Experimentar con nuevos enfoques metodológicos.",
+            "image": "../assets/images/bullets/question.png"
+        },
+        {
+            "title": "Sencillez",
+            "description": "\"Keep it simple\".",
+            "image": "../assets/images/bullets/snap.png"
+        }
+    ],
+    "projects": [
+    
+    ],
+    "hobbies": [
+
+    ],
+    "contacts": [
+        {
+            "type": "Email",
+            "url": "mailto:valerio.dellefave00@gmail.com",
+            "icon": "../assets/icons/social/email.png"
+        },
+        {
+            "type": "Facebook",
+            "url": "https://www.facebook.com/valerio.dellefave",
+            "icon": "../assets/icons/social/facebook.png"
+        },
+        {
+            "type": "GitHub",
+            "url": "https://github.com/ValeriodelleFave",
+            "icon": "../assets/icons/social/github.png"
+        },
+        {
+            "type": "Instagram",
+            "url": "https://www.instagram.com/valerio_dellefave",
+            "icon": "../assets/icons/social/instagram.png"
+        },
+        {
+            "type": "LinkedIn",
+            "url": "https://www.linkedin.com/in/valerio-delle-fave",
+            "icon": "../assets/icons/social/linkedin.png"
+        }
+    ],
+    "copyrightText": "Copyright © Valerio delle Fave. All Rights Reserved."
+}

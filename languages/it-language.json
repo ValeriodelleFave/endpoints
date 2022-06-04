@@ -1,0 +1,146 @@
+{
+    "presentationTitle": "Ciao!<br>Sono <b>Valerio delle Fave</b>.",
+    "menuItems": [
+        {
+          "name": "Intro",
+          "link": "#presentation",
+          "image": "../assets/icons/nav/presentation.png"
+        },
+        {
+          "name": "Me",
+          "link": "#about",
+          "image": "../assets/icons/nav/about.png"
+        },
+        {
+          "name": "Contatti",
+          "link": "#contact",
+          "image": "../assets/icons/nav/contact.png"
+        }
+    ],
+    "sections": [
+        {
+            "type": "about",
+            "title": "Me",
+            "content": [ ]
+        },
+        {
+            "type": "color-wheel",
+            "title": "Ruota dei Colori",
+            "content": [ ]
+        },
+        {
+            "type": "contact",
+            "title": "Contatti",
+            "content": [ ]
+        }
+    ],
+    "specialBullet": {
+        "title": "Chi è questo tizio?",
+        "description": "Attualmente, sono uno sviluppatore Front-End residente a Roma. Ho una passione per il mondo IT e mi piace sviluppare soluzioni innovative.",
+        "image": "../assets/images/bullets/me.jpg"
+    },
+    "bullets": [
+        {
+            "title": "Performance",
+            "description": "Monitoraggio e test delle prestazioni.",
+            "image": "../assets/images/bullets/performance.png"
+        },
+        {
+            "title": "Adattamento",
+            "description": "Visibile su qualsiasi dispositivo.",
+            "image": "../assets/images/bullets/adaptation.png"
+        },
+        {
+            "title": "Curiosità",
+            "description": "Sperimentare nuovi approcci metodologici.",
+            "image": "../assets/images/bullets/question.png"
+        },
+        {
+            "title": "Semplicità",
+            "description": "\"Keep it simple\".",
+            "image": "../assets/images/bullets/snap.png"
+        }
+    ],
+    "projects": [
+        {
+            "title": "RaiPlay iOS",
+            "subtitle": "Sottotitolo",
+            "description": "Descrizione molto lunga",
+            "languages": [
+                "Programmazione iOS/iPad",
+                "Swift"
+            ],
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        },
+        {
+            "title": "RAI Front-End",
+            "subtitle": "Sottotitolo",
+            "description": "Descrizione molto lunga",
+            "languages": [
+                "JavaScript",
+                "CSS",
+                "HTML",
+                "XSL",
+                "SQL",
+                "MongoDB"
+            ],
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        },
+        {
+            "title": "RaiPlay tvOS",
+            "subtitle": "Sottotitolo",
+            "description": "Descrizione molto lunga",
+            "languages": [
+                "Programmazione tvOS",
+                "Swift"
+            ],
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        }
+    ],
+    "hobbies": [
+        {
+            "title": "Teatro - Recitazione",
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        },
+        {
+            "title": "Fitness",
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        },
+        {
+            "title": "Corsa",
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        },
+        {
+            "title": "Lettura",
+            "image": "../assets/placeholders/placeholder_200x200.png"
+        }
+    ],
+    "contacts": [
+        {
+            "type": "Email",
+            "url": "mailto:valerio.dellefave00@gmail.com",
+            "icon": "../assets/icons/social/email.png"
+        },
+        {
+            "type": "Facebook",
+            "url": "https://www.facebook.com/valerio.dellefave",
+            "icon": "../assets/icons/social/facebook.png"
+        },
+        {
+            "type": "GitHub",
+            "url": "https://github.com/ValeriodelleFave",
+            "icon": "../assets/icons/social/github.png"
+        },
+        {
+            "type": "Instagram",
+            "url": "https://www.instagram.com/valerio_dellefave",
+            "icon": "../assets/icons/social/instagram.png"
+        },
+        {
+            "type": "LinkedIn",
+            "url": "https://www.linkedin.com/in/valerio-delle-fave",
+            "icon": "../assets/icons/social/linkedin.png"
+        }
+    ],
+    "copyrightText": "Copyright © Valerio delle Fave. All Rights Reserved."
+}

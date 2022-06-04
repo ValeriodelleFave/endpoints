@@ -25,7 +25,7 @@ app.get("/players", (req, res) => {
 app.get("/match", (req, res) => {
     let a = importData;
     res.setHeader("Content-Type", "text/html");
-    res.send({ body: importData })
+    res.send(importData);
 });
 
 app.listen(port, () => {

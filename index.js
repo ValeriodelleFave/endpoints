@@ -12,7 +12,8 @@ app.get("/players", (req, res) => {
 });
 
 app.get("/match", (req, res) => {
-    res.json(importData);
+    let a = importData;
+    res.send({ body: importData })
 });
 
 app.listen(port, () => {

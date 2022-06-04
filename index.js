@@ -28,7 +28,7 @@ app.get("/language", (req, res) => {
     let a = importData;
     res.setHeader("Content-Type", "text/html");
 
-    const lang = req.query.language;
+    const lang = req.body.language;
 
     if (lang == "IT") {
         res.send(importData);

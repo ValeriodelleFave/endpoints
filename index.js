@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
-const importData = require("./data.json");
 let port = process.env.PORT || 3000;
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With,Content-Type, Accept");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE')
     next();
 });
 
@@ -14,28 +13,24 @@ app.get("/", (req, res) => {
     res.json("Hello World");
 });
 
-app.get("/players", (req, res) => {
-    res.json(importData);
-});
-
-app.get("/match", (req, res) => {
-    let a = importData;
-    res.setHeader("Content-Type", "text/html");
-    res.send(importData);
-});
-
 app.get("/language", (req, res) => {
-    let a = importData;
-    res.setHeader("Content-Type", "text/html");
+    const lang = req.query.language;
 
-    const lang = req.body.language;
-
-    if (lang == "IT") {
-        res.send(importData);
-    } else {
-        res.sendStatus(400);
+    switch (lang) {
+        case "IT":
+            res.send(require("./languages/it-language.json"));
+            break;
+        case "EN":
+            res.send(require("./languages/en-language.json"));
+            break;
+        case "ES":
+            res.send(require("./languages/es-language.json"));
+            break;
+    
+        default:
+            res.sendStatus(400);
+            break;
     }
-
 });
 
 app.listen(port, () => {

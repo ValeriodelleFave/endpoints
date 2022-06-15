@@ -2,31 +2,31 @@
     "presentationTitle": "Ciao!<br>Sono <b>Valerio delle Fave</b>.",
     "menuItems": [
         {
-          "name": "Intro",
-          "link": "#presentation",
-          "image": "../assets/icons/nav/presentation.png"
+            "name": "Intro",
+            "link": "#presentation",
+            "image": "../assets/icons/nav/presentation.png"
         },
         {
-          "name": "Me",
-          "link": "#about",
-          "image": "../assets/icons/nav/about.png"
+            "name": "Me",
+            "link": "#about",
+            "image": "../assets/icons/nav/about.png"
         },
         {
-          "name": "Contatti",
-          "link": "#contact",
-          "image": "../assets/icons/nav/contact.png"
+            "name": "Contatti",
+            "link": "#contact",
+            "image": "../assets/icons/nav/contact.png"
         }
     ],
     "sections": [
         {
             "type": "about",
             "title": "Me",
-            "content": [ ]
+            "content": []
         },
         {
             "type": "contact",
             "title": "Contatti",
-            "content": [ ]
+            "content": []
         }
     ],
     "specialBullet": {
@@ -108,33 +108,6 @@
         {
             "title": "Lettura",
             "image": "../assets/placeholders/placeholder_200x200.png"
-        }
-    ],
-    "contacts": [
-        {
-            "type": "Email",
-            "url": "mailto:valerio.dellefave00@gmail.com",
-            "icon": "../assets/icons/social/email.png"
-        },
-        {
-            "type": "Facebook",
-            "url": "https://www.facebook.com/valerio.dellefave",
-            "icon": "../assets/icons/social/facebook.png"
-        },
-        {
-            "type": "GitHub",
-            "url": "https://github.com/ValeriodelleFave",
-            "icon": "../assets/icons/social/github.png"
-        },
-        {
-            "type": "Instagram",
-            "url": "https://www.instagram.com/valerio_dellefave",
-            "icon": "../assets/icons/social/instagram.png"
-        },
-        {
-            "type": "LinkedIn",
-            "url": "https://www.linkedin.com/in/valerio-delle-fave",
-            "icon": "../assets/icons/social/linkedin.png"
         }
     ],
     "copyrightText": "Copyright © Valerio delle Fave. All Rights Reserved."

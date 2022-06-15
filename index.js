@@ -13,24 +13,30 @@ app.get("/", (req, res) => {
     res.json("Hello World");
 });
 
+app.get("/contacts", (req, res) => {
+    res.send(require("./data/contacts.json"));
+});
+
 app.get("/language", (req, res) => {
     const lang = req.query.language;
-
     switch (lang) {
         case "IT":
-            res.send(require("./languages/it-language.json"));
+            res.send(require("./data/languages/it-language.json"));
             break;
         case "EN":
-            res.send(require("./languages/en-language.json"));
+            res.send(require("./data/languages/en-language.json"));
             break;
         case "ES":
-            res.send(require("./languages/es-language.json"));
+            res.send(require("./data/languages/es-language.json"));
             break;
-    
         default:
             res.sendStatus(400);
             break;
     }
+});
+
+app.get("/skills", (req, res) => {
+    res.send(require("./data/skills.json"));
 });
 
 app.listen(port, () => {

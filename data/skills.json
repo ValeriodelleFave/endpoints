@@ -1,0 +1,30 @@
+[
+    {
+        "name": "JavaScript",
+        "value": 80
+    },
+    {
+        "name": "CSS",
+        "value": 80
+    },
+    {
+        "name": "Swift",
+        "value": 50
+    },
+    {
+        "name": "HTML",
+        "value": 90
+    },
+    {
+        "name": "Node.js",
+        "value": 60
+    },
+    {
+        "name": "MongoDB",
+        "value": 40
+    },
+    {
+        "name": "SQL",
+        "value": 40
+    }
+]

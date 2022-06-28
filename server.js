@@ -9,7 +9,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use("/", require("./routes/routes"));
+app.use("/", require("./routes/index"));
 
 app.listen(port, () => {
     console.log(`Example app is listening on port http://localhost:${port}`);

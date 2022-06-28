@@ -1,5 +1,11 @@
 const router = require('express').Router();
 
+const languages = {
+    it: "it-it",
+    en: "en-GB",
+    es: "es-Es"
+}
+
 router.get("/", (req, res) => {
     res.json("Hello World");
 });
@@ -11,23 +17,41 @@ router.get("/contacts", (req, res) => {
 router.get("/language", (req, res) => {
     const lang = req.query.language;
     switch (lang) {
-        case "IT":
-            res.send(require("../data/languages/it-language.json"));
+        case languages.it:
+            res.send({
+                lang: languages.it,
+                data: require("../data/languages/it-language.json")
+            });
             break;
-        case "EN":
-            res.send(require("../data/languages/en-language.json"));
+        case languages.en:
+            res.send({
+                lang: languages.en,
+                data: require("../data/languages/en-language.json")
+            });
             break;
-        case "ES":
-            res.send(require("../data/languages/es-language.json"));
+        case languages.es:
+            res.send({
+                lang: languages.es,
+                data: require("../data/languages/es-language.json")
+            });
             break;
         default:
-            res.sendStatus(400);
+            res.send({
+                lang: languages.en,
+                data: require("../data/languages/en-language.json")
+            });
             break;
     }
+});
+
+router.get("/languages", (req, res) => {
+    res.send(require("../data/languages/languages.json"));
 });
 
 router.get("/skills", (req, res) => {
     res.send(require("../data/skills.json"));
 });
+
+router.use("/portfolio", router)
 
 module.exports = router;

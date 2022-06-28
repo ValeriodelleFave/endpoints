@@ -19,19 +19,19 @@ router.get("/language", (req, res) => {
     switch (lang) {
         case languages.it:
             res.send({
-                lang: languages.it,
+                language: languages.it,
                 data: require("../data/languages/it-language.json")
             });
             break;
         case languages.en:
             res.send({
-                lang: languages.en,
+                language: languages.en,
                 data: require("../data/languages/en-language.json")
             });
             break;
         case languages.es:
             res.send({
-                lang: languages.es,
+                language: languages.es,
                 data: require("../data/languages/es-language.json")
             });
             break;

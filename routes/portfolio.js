@@ -6,10 +6,6 @@ const languages = {
     es: "es-Es"
 }
 
-router.get("/", (req, res) => {
-    res.json("Hello World");
-});
-
 router.get("/contacts", (req, res) => {
     res.send(require("../data/contacts.json"));
 });

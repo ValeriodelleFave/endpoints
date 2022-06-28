@@ -1,3 +1,4 @@
 module.exports = [
-    require("./routes")
+    require("./portfolio"),
+    require("./player")
 ]

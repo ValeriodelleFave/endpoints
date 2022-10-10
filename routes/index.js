@@ -1,4 +1,4 @@
 module.exports = [
     require("./portfolio"),
-    require("./player")
+    require("./istudy")
 ]

@@ -1,14 +1,22 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "";
+const uri = "mongodb+srv://vdellefave:admin@mycluster.ed48vnx.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+ 
 
-run().catch(console.dir);
 
-export class MongoAgent {
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// const uri = "mongodb+srv://vdellefave:<password>@mycluster.ed48vnx.mongodb.net/?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   // perform actions on the collection object
+//   client.close();
+// });
 
-    /**
-     * Create a MongoDB connection
-     */
+
+class MongoAgent {
+
+    // Create a MongoDB connection
     static async connect() {
         try {
             await client.connect();
@@ -19,9 +27,7 @@ export class MongoAgent {
         
     }
     
-    /**
-     * Delete a MongoDB connection
-     */
+    //Delete a MongoDB connection
     static async disconnect() {
         try {
             await client.close();
@@ -50,3 +56,5 @@ export class MongoAgent {
     }
 
 }
+
+MongoAgent.connect()

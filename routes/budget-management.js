@@ -1,11 +1,12 @@
 const router = require('express').Router();
+const mongo = require('../mongodb-connection')
 
 router.get("/", (req, res) => {
     res.json("Hello World");
 });
 
 router.post("/", (req, res) => {
-    debugger
+    mongo.insertOne(req.body)
     res.json("Hello World");
 });
 

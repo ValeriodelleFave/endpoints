@@ -7,7 +7,17 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
     mongo.insertOne(req.body)
-    res.json("Hello World");
+    res.json("Inserimento DB");
+});
+
+router.post("/connect", (req, res) => {
+    mongo.connect();
+    res.json("Connessione DB")
+});
+
+router.post("/disconnect", (req, res) => {
+    mongo.disconnect();
+    res.json("Disconnessione DB")
 });
 
 router.use("/budget-management", router)

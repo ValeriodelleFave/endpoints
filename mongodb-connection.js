@@ -1,17 +1,26 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://vdellefave:admin@mycluster.ed48vnx.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const db = client.db("budget_management");
 
 const MongoAgent = {
+    connect: function connect() {
+        client.connect().finally(() => {
+            console.log("Connessione Mongo");
+        });
+    },
     insertOne: async function insertOne(data) {
-      await client.connect();
       try {
-        const budget = client.db("budget_management").collection("budget");
+        const budget = db.collection("budget");
         const result = await budget.insertOne(data);
-        console.log(`A document was inserted with the _id: ${result}`);
       } finally {
-        await client.close();
+        console.log("Operazione di inserimento inviata");
       }
+    },
+    disconnect: function disconnect() {
+        client.close().finally(() => {
+            console.log("Disconnessione Mongo");
+        });
     }
 }
 

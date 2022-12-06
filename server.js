@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "https://valeriodellefave.github.io");
     res.header("Access-Control-Allow-Origin", "https://my-endpoints.herokuapp.com");
     res.header("Access-Control-Allow-Origin", "http://localhost:4200");
     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");

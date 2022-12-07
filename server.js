@@ -7,9 +7,15 @@ let port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: "https://valeriodellefave.github.io",
+    credentials: true,
+    optionsSuccessStatus: 200
+}));
+/**
+ * 
+ 
 app.use(function (req, res, next) {
-    
     res.setHeader("Access-Control-Allow-Origin", "https://valeriodellefave.github.io");
     res.setHeader("Access-Control-Allow-Origin", "https://my-endpoints.herokuapp.com");
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -18,6 +24,7 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 });
+*/
 
 app.use("/", require("./routes/index"));
 

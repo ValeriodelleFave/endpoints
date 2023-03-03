@@ -16,18 +16,21 @@ const MongoAgent = {
       await client.connect();
       const response = await db.collection("budget").insertOne(data);
       console.log(`Il documento con id ${response.insertedId} è stato inserito correttamente.`);
-    } catch (err) {
-      console.log("Operazione fallita. ", err);
+    } catch (error) {
+      console.log("Operazione fallita. ", error);
     } finally {
       await client.close();
     }
   },
   getAll: async function getAll() {
     try {
+      await client.connect();
       const budget = db.collection("budget");
-      return await budget.find({});
+      return await budget.find({}).toArray();
     } catch (error) {
       console.log(error)
+    } finally {
+      await client.close();
     }
   },
 }

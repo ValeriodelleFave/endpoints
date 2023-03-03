@@ -7,10 +7,7 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/getAll", async (req, res) => {
-    const re = await mongo.getAll()
-    // re.forEach
-    debugger
-    res.json(re);
+    res.json(await mongo.getAll());
 });
 
 router.use("/budget-management", router);

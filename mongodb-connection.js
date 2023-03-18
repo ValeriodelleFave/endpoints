@@ -26,13 +26,24 @@ const MongoAgent = {
     try {
       await client.connect();
       const budget = db.collection("budget");
-      return await budget.find({}).toArray();
+      return await budget.find({}).sort({$natural:-1}).toArray();
     } catch (error) {
       console.log(error)
     } finally {
       await client.close();
     }
   },
+  getLastTen: async function getLastTen() {
+    try {
+      await client.connect();
+      const budget = db.collection("budget");
+      return await budget.find({}).sort({$natural:-1}).limit(10).toArray();
+    } catch (error) {
+      console.log(error)
+    } finally {
+      await client.close();
+    }
+  }
 }
 
 module.exports = MongoAgent;

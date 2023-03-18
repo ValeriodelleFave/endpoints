@@ -10,6 +10,10 @@ router.get("/getAll", async (req, res) => {
     res.json(await mongo.getAll());
 });
 
+router.get("/getLastTen", async (req, res) => {
+    res.json(await mongo.getLastTen());
+});
+
 router.use("/budget-management", router);
 
 module.exports = router;

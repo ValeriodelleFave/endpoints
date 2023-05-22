@@ -43,6 +43,9 @@ const MongoAgent = {
     } finally {
       await client.close();
     }
+  },
+  getAllByMonth: async function() {
+
   }
 }
 

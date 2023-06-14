@@ -26,7 +26,7 @@ const MongoAgent = {
     try {
       await client.connect();
       const budget = db.collection("budget");
-      return await budget.find({}).sort({$natural:-1}).toArray();
+      return await budget.find({}).sort({ $natural: -1 }).toArray();
     } catch (error) {
       console.log(error)
     } finally {
@@ -37,15 +37,43 @@ const MongoAgent = {
     try {
       await client.connect();
       const budget = db.collection("budget");
-      return await budget.find({}).sort({$natural:-1}).limit(10).toArray();
+      return await budget.find({}).sort({ $natural: -1 }).limit(10).toArray();
     } catch (error) {
       console.log(error)
     } finally {
       await client.close();
     }
   },
-  getAllByMonth: async function() {
+  getAllByMonth: async function () {
+    try {
+      await client.connect();
+      const budget = db.collection("budget");
+      const aggCursor = budget.aggregate([
+        {
+          $group: {
+            _id: {
+              $month: {
+                $toDate: "$date"
+              }
+            },
+            "total": {
+              $sum: "$money"
+            }
+          }
+        }
+      ]).sort({ _id: 1 })
 
+      let list = [];
+      for await (const doc of aggCursor) {
+        list.push(doc);
+      }
+
+      return list;
+    } catch (error) {
+      console.log(error)
+    } finally {
+      await client.close();
+    }
   }
 }
 

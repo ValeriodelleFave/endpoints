@@ -1,6 +1,7 @@
 module.exports = [
     require("./budget-management"),
     require("./portfolio"),
-    require("./istudy"),
-    require("./jstest")
+    // require("./istudy"),
+    require("./jstest"),
+    require("./fallback")
 ]

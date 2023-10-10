@@ -1,4 +1,15 @@
 const router = require('express').Router();
+const {
+    MongoClient,
+    ServerApiVersion
+} = require('mongodb');
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@mycluster.ed48vnx.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverApi: ServerApiVersion.v1
+});
+const db = client.db("blog");
 /**
  * @type {Object[]}
  */
@@ -13,16 +24,31 @@ router.get("/", (req, res) => {
     res.send("Blog");
 });
 
-router.get("/articles/:id", (req, res) => {
-    const article = data.find(elem => elem.id === Number(req.params.id));
-    if (article === undefined) {
-        res.statusCode = 404;
+router.get("/articles/:id", async (req, res) => {
+    try {
+        await client.connect();
+        const data = await db.collection("articles").find({}).toArray();
+        const article = data.find(elem => elem._id === Number(req.params.id));
+        if (article === undefined) {
+            res.statusCode = 404;
+        }
+        res.json(article);
+    } catch (error) {
+        console.log("Operazione fallita. ", error);
+    } finally {
+        await client.close();
     }
-    res.json(article);
 });
 
-router.get("/articles", (req, res) => {
-    res.json(data);
+router.get("/articles", async (req, res) => {
+    try {
+        await client.connect();
+        res.json(await db.collection("articles").find({}).toArray());
+    } catch (error) {
+        console.log("Operazione fallita. ", error);
+    } finally {
+        await client.close();
+    }
 });
 
 router.use("/blog", router)

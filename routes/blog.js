@@ -24,6 +24,18 @@ router.get("/", (req, res) => {
     res.send("Blog");
 });
 
+router.post("/articles", async (req, res) => {
+    try {
+        await client.connect();
+        const response = await db.collection("articles").insertOne(req.body);
+        console.log(`Il documento con id ${response._id} è stato inserito correttamente.`);
+    } catch (error) {
+        console.log("Operazione fallita. ", error);
+    } finally {
+        await client.close();
+    }
+});
+
 router.get("/articles/:id", async (req, res) => {
     try {
         await client.connect();

@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const {
     MongoClient,
-    ServerApiVersion
+    ServerApiVersion,
+    ObjectId
 } = require('mongodb');
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@mycluster.ed48vnx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -24,11 +25,26 @@ router.get("/", (req, res) => {
     res.send("Blog");
 });
 
+router.delete("/articles", async (req, res) => {
+    try {
+        await client.connect();
+        const response = await db.collection("articles").deleteOne({ _id: ObjectId(req.body._id) });
+    } catch (error) {
+        console.log("Operazione fallita. ", error);
+    } finally {
+        await client.close();
+    }
+});
+
 router.post("/articles", async (req, res) => {
     try {
         await client.connect();
-        const response = await db.collection("articles").insertOne(req.body);
-        console.log(`Il documento con id ${response._id} è stato inserito correttamente.`);
+        console.log()
+        if (req.body._id == null) {
+            let response = await db.collection("articles").insertOne(req.body);
+        } else {
+            let response = await db.collection("articles").updateOne({ _id: ObjectId(req.params._id) }, { $set: req.body });
+        }
     } catch (error) {
         console.log("Operazione fallita. ", error);
     } finally {
@@ -39,9 +55,8 @@ router.post("/articles", async (req, res) => {
 router.get("/articles/:id", async (req, res) => {
     try {
         await client.connect();
-        const data = await db.collection("articles").find({}).toArray();
-        const article = data.find(elem => elem._id === Number(req.params.id));
-        if (article === undefined) {
+        const article = await db.collection("articles").findOne({ _id: ObjectId(req.params.id) });
+        if (article === null) {
             res.statusCode = 404;
         }
         res.json(article);

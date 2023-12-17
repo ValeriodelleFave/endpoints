@@ -9,6 +9,7 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1
 });
 const db = client.db("budget_management");
+const ObjectId = require('mongodb').ObjectId;
 
 const MongoAgent = {
   insertOne: async function insertOne(data) {
@@ -18,6 +19,19 @@ const MongoAgent = {
       console.log(`Il documento con id ${response.insertedId} è stato inserito correttamente.`);
     } catch (error) {
       console.log("Operazione fallita. ", error);
+    } finally {
+      await client.close();
+    }
+  },
+  deleteOne: async function deleteOne(data) {
+    try {
+      await client.connect();
+      const response = await db.collection("budget").deleteOne({ "_id" : ObjectId(data) });
+      console.log(`Il documento con id ${data} è stato eliminato correttamente.`);
+      return 200;
+    } catch (error) {
+      console.log("Operazione fallita. ", error);
+      return 500;
     } finally {
       await client.close();
     }

@@ -1,6 +1,15 @@
 const router = require('express').Router();
 const mongo = require('../mongodb-connection')
 
+router.get("/", (req, res) => {
+    res.send("Bella!");
+})
+
+router.delete("/delete/:id", async (req, res) => {
+    const response = await mongo.deleteOne(req.params.id)
+    res.send(response);
+})
+
 router.post("/", async (req, res) => {
     const response = await mongo.insertOne(req.body)
     res.json("Inserimento DB");

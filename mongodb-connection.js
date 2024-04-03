@@ -26,7 +26,7 @@ const MongoAgent = {
   deleteOne: async function deleteOne(data) {
     try {
       await client.connect();
-      const response = await db.collection("budget").deleteOne({ "_id" : ObjectId(data) });
+      const response = await db.collection("budget").deleteOne({ "_id": ObjectId(data) });
       console.log(`Il documento con id ${data} è stato eliminato correttamente.`);
       return 200;
     } catch (error) {
@@ -63,6 +63,14 @@ const MongoAgent = {
       await client.connect();
       const budget = db.collection("budget");
       const aggCursor = budget.aggregate([
+        {
+          $match: {
+            date: {
+              $gte: new Date(new Date().getFullYear(), 0, 1).getTime(),
+              $lt: new Date(new Date().getFullYear() + 1, 0, 1).getTime()
+            }
+          }
+        },
         {
           $group: {
             _id: {

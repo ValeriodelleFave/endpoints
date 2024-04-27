@@ -4,5 +4,6 @@ module.exports = [
     require("./portfolio"),
     // require("./istudy"),
     require("./jstest"),
+    require("./my-vehicles"),
     require("./fallback"),
 ]

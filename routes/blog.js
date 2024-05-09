@@ -29,6 +29,7 @@ router.delete("/articles", async (req, res) => {
     try {
         await client.connect();
         const response = await db.collection("articles").deleteOne({ _id: ObjectId(req.body._id) });
+        res.status(200).send(response);
     } catch (error) {
         console.log("Operazione fallita. ", error);
     } finally {
@@ -39,12 +40,13 @@ router.delete("/articles", async (req, res) => {
 router.post("/articles", async (req, res) => {
     try {
         await client.connect();
-        console.log()
+        let response;
         if (req.body._id == null) {
-            let response = await db.collection("articles").insertOne(req.body);
+            response = await db.collection("articles").insertOne(req.body);
         } else {
-            let response = await db.collection("articles").updateOne({ _id: ObjectId(req.params._id) }, { $set: req.body });
+            response = await db.collection("articles").updateOne({ _id: ObjectId(req.params._id) }, { $set: req.body });
         }
+        res.status(200).send(response)
     } catch (error) {
         console.log("Operazione fallita. ", error);
     } finally {

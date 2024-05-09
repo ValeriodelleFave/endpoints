@@ -44,7 +44,9 @@ router.post("/articles", async (req, res) => {
         if (req.body._id == null) {
             response = await db.collection("articles").insertOne(req.body);
         } else {
-            response = await db.collection("articles").updateOne({ _id: ObjectId(req.params._id) }, { $set: req.body });
+            const id = req.body._id;
+            delete req.body._id;
+            response = await db.collection("articles").updateOne({ _id: ObjectId(id) }, { $set: req.body });
         }
         res.status(200).send(response)
     } catch (error) {

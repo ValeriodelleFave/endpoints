@@ -80,6 +80,16 @@ const MongoAgent = {
             },
             "total": {
               $sum: "$money"
+            },
+            "income": {
+              $sum: { 
+                $cond: [{ $gt: ["$money", 0] }, "$money", 0]
+              }
+            },
+            "expenditure": {
+              $sum: {
+                $cond: [{ $lt: ["$money", 0] }, "$money", 0]
+              }
             }
           }
         }

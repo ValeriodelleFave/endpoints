@@ -25,5 +25,10 @@ app.use("/", require("./routes/index"));
 
 app.listen(port, () => {
     console.log(`Example app is listening on port http://localhost:${port}`);
+    const hour = 3600000;
+    setInterval(() => {
+        (require('https')).get(`https://my-endpoints.onrender.com/budget-management/getLastTen`);
+    }, hour);
+    
 });
 

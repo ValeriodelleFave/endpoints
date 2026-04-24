@@ -1,76 +1,175 @@
 const router = require('express').Router();
 const fs = require('fs');
+const path = require('path');
 
-router.get("/get-vehicles", (req, res) => {
-    res.json(require("./../data/cars.json"));
-});
+const DATA_FILE = path.join(__dirname, '..', 'data', 'cars.json');
 
-router.get("/get-vehicle-notifications/:id", (req, res) => {
-    const car = require("./../data/cars.json").find(element => element.id === Number(req.params.id))
-    res.json(car);
-});
+// ---------- helpers ----------
+function readVehicles() {
+    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+}
 
-router.delete("/:carId/notification/:id", (req, res) => {
+function writeVehicles(data) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
 
-
-    // Read the JSON file 
-    let jsonData = JSON.parse(fs.readFileSync("./data/cars.json"));
-
-    // Add or edit data 
-    const car = jsonData.find(element => element.id === Number(req.params.carId))
-
-    const notification =
-        car.notifications
-            .find(element => element.id === Number(req.params.id))
-
-
-    car.notifications = car.notifications.filter(item => item.id !== notification.id)
-
-    // Write the JSON file 
-    fs.writeFileSync("./data/cars.json", JSON.stringify(jsonData));
-
-
-    res.json(req.params)
-})
-
-router.post("/:carId/notification", (req, res) => {
-    let isShuffling = true
-    let idOption = Math.floor(Math.random() * 100);
-    while (isShuffling) {
-        idOption = Math.floor(Math.random() * 100);
-        const car = require("./../data/cars.json").find(element => element.id === Number(req.params.carId))
-        if (car.notifications.findIndex(element => element.id === idOption) === -1) {
-            isShuffling = false;
-        }
+function nextId(list) {
+    let id = Math.floor(Math.random() * 1000000);
+    while (list.some(el => el.id === id)) {
+        id = Math.floor(Math.random() * 1000000);
     }
+    return id;
+}
 
-    req.body.id = idOption;
-    req.body.scadenza = Number(req.body.scadenza)
-    req.body.ultimaRegistrazione = Number(req.body.ultimaRegistrazione)
+function findVehicle(vehicles, id) {
+    return vehicles.find(v => v.id === Number(id));
+}
 
-    // Read the JSON file 
-    let jsonData = JSON.parse(fs.readFileSync("./data/cars.json"));
+function toVehicleSummary(v) {
+    return {
+        id: v.id,
+        targa: v.targa,
+        marca: v.marca,
+        modello: v.modello,
+        specifica: v.specifica,
+        km: v.km
+    };
+}
 
-    // Add or edit data 
-    jsonData.find(element => element.id === Number(req.params.carId)).notifications.push(req.body)
+function sanitizeNotification(body) {
+    const toNum = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
+    return {
+        titolo: body.titolo ?? '',
+        scadenzaKm: toNum(body.scadenzaKm),
+        scadenzaGiorni: toNum(body.scadenzaGiorni),
+        ultimaRegistrazioneKm: toNum(body.ultimaRegistrazioneKm),
+        ultimaRegistrazioneData: body.ultimaRegistrazioneData ?? null,
+        isDone: Boolean(body.isDone)
+    };
+}
 
-    // Write the JSON file 
-    fs.writeFileSync("./data/cars.json", JSON.stringify(jsonData));
+// ---------- Vehicles ----------
 
-    res.json(req.params)
-})
+// GET /my-vehicles
+router.get('/my-vehicles', (req, res) => {
+    const vehicles = readVehicles();
+    res.json(vehicles.map(toVehicleSummary));
+});
 
-router.put("/:carId/notification", (req, res) => {
-    const car = require("./../data/cars.json").find(element => element.id === Number(req.params.id))
-    res.json(req.params)
-})
+// POST /my-vehicles
+router.post('/my-vehicles', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = {
+        id: nextId(vehicles),
+        targa: req.body.targa,
+        marca: req.body.marca,
+        modello: req.body.modello,
+        specifica: req.body.specifica,
+        km: Number(req.body.km) || 0,
+        notifications: []
+    };
+    vehicles.push(vehicle);
+    writeVehicles(vehicles);
+    res.status(201).json(vehicle);
+});
 
-router.put("/update-km", (req, res) => {
-    const car = require("./../data/cars.json").find(element => element.id === Number(req.params.id))
-    res.json(req.body)
-})
+// GET /my-vehicles/:id
+router.get('/my-vehicles/:id', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    res.json(vehicle);
+});
 
+// DELETE /my-vehicles/:id
+router.delete('/my-vehicles/:id', (req, res) => {
+    const vehicles = readVehicles();
+    const idx = vehicles.findIndex(v => v.id === Number(req.params.id));
+    if (idx === -1) return res.status(404).json({ error: 'Vehicle not found' });
+    vehicles.splice(idx, 1);
+    writeVehicles(vehicles);
+    res.status(204).end();
+});
 
-router.use("/my-vehicles", router)
+// PUT /my-vehicles/:id/km
+router.put('/my-vehicles/:id/km', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    vehicle.km = Number(req.body.km);
+    writeVehicles(vehicles);
+    res.json(vehicle);
+});
+
+// ---------- Notifications ----------
+
+// POST /my-vehicles/:id/notifications
+router.post('/my-vehicles/:id/notifications', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    if (!Array.isArray(vehicle.notifications)) vehicle.notifications = [];
+
+    const notification = {
+        id: nextId(vehicle.notifications),
+        ...sanitizeNotification(req.body)
+    };
+    vehicle.notifications.push(notification);
+    writeVehicles(vehicles);
+    res.status(201).json(notification);
+});
+
+// GET /my-vehicles/:id/notifications/:notifId
+router.get('/my-vehicles/:id/notifications/:notifId', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    const notification = (vehicle.notifications || []).find(n => n.id === Number(req.params.notifId));
+    if (!notification) return res.status(404).json({ error: 'Notification not found' });
+    res.json(notification);
+});
+
+// PUT /my-vehicles/:id/notifications/:notifId
+router.put('/my-vehicles/:id/notifications/:notifId', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    const idx = (vehicle.notifications || []).findIndex(n => n.id === Number(req.params.notifId));
+    if (idx === -1) return res.status(404).json({ error: 'Notification not found' });
+
+    vehicle.notifications[idx] = {
+        id: vehicle.notifications[idx].id,
+        ...sanitizeNotification(req.body)
+    };
+    writeVehicles(vehicles);
+    res.json(vehicle.notifications[idx]);
+});
+
+// DELETE /my-vehicles/:id/notifications/:notifId
+router.delete('/my-vehicles/:id/notifications/:notifId', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    const idx = (vehicle.notifications || []).findIndex(n => n.id === Number(req.params.notifId));
+    if (idx === -1) return res.status(404).json({ error: 'Notification not found' });
+
+    vehicle.notifications.splice(idx, 1);
+    writeVehicles(vehicles);
+    res.status(204).end();
+});
+
+// POST /my-vehicles/:id/notifications/:notifId/done
+router.post('/my-vehicles/:id/notifications/:notifId/done', (req, res) => {
+    const vehicles = readVehicles();
+    const vehicle = findVehicle(vehicles, req.params.id);
+    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
+    const notification = (vehicle.notifications || []).find(n => n.id === Number(req.params.notifId));
+    if (!notification) return res.status(404).json({ error: 'Notification not found' });
+
+    notification.ultimaRegistrazioneKm = req.body.km !== undefined ? Number(req.body.km) : notification.ultimaRegistrazioneKm;
+    notification.ultimaRegistrazioneData = req.body.data ?? notification.ultimaRegistrazioneData;
+    writeVehicles(vehicles);
+    res.json(notification);
+});
 
 module.exports = router;

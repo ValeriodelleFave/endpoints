@@ -50,14 +50,14 @@ function sanitizeNotification(body) {
 
 // ---------- Vehicles ----------
 
-// GET /my-vehicles
-router.get('/my-vehicles', (req, res) => {
+// GET /
+router.get('/', (req, res) => {
     const vehicles = readVehicles();
     res.json(vehicles.map(toVehicleSummary));
 });
 
-// POST /my-vehicles
-router.post('/my-vehicles', (req, res) => {
+// POST /
+router.post('/', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = {
         id: nextId(vehicles),
@@ -73,16 +73,16 @@ router.post('/my-vehicles', (req, res) => {
     res.status(201).json(vehicle);
 });
 
-// GET /my-vehicles/:id
-router.get('/my-vehicles/:id', (req, res) => {
+// GET id
+router.get('/:id', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
     res.json(vehicle);
 });
 
-// DELETE /my-vehicles/:id
-router.delete('/my-vehicles/:id', (req, res) => {
+// DELETE id
+router.delete('/:id', (req, res) => {
     const vehicles = readVehicles();
     const idx = vehicles.findIndex(v => v.id === Number(req.params.id));
     if (idx === -1) return res.status(404).json({ error: 'Vehicle not found' });
@@ -91,8 +91,8 @@ router.delete('/my-vehicles/:id', (req, res) => {
     res.status(204).end();
 });
 
-// PUT /my-vehicles/:id/km
-router.put('/my-vehicles/:id/km', (req, res) => {
+// PUT id/km
+router.put('/:id/km', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
@@ -103,8 +103,8 @@ router.put('/my-vehicles/:id/km', (req, res) => {
 
 // ---------- Notifications ----------
 
-// POST /my-vehicles/:id/notifications
-router.post('/my-vehicles/:id/notifications', (req, res) => {
+// POST id/notifications
+router.post('/:id/notifications', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
@@ -119,8 +119,8 @@ router.post('/my-vehicles/:id/notifications', (req, res) => {
     res.status(201).json(notification);
 });
 
-// GET /my-vehicles/:id/notifications/:notifId
-router.get('/my-vehicles/:id/notifications/:notifId', (req, res) => {
+// GET id/notifications/:notifId
+router.get('/:id/notifications/:notifId', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
@@ -129,8 +129,8 @@ router.get('/my-vehicles/:id/notifications/:notifId', (req, res) => {
     res.json(notification);
 });
 
-// PUT /my-vehicles/:id/notifications/:notifId
-router.put('/my-vehicles/:id/notifications/:notifId', (req, res) => {
+// PUT id/notifications/:notifId
+router.put('/:id/notifications/:notifId', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
@@ -145,8 +145,8 @@ router.put('/my-vehicles/:id/notifications/:notifId', (req, res) => {
     res.json(vehicle.notifications[idx]);
 });
 
-// DELETE /my-vehicles/:id/notifications/:notifId
-router.delete('/my-vehicles/:id/notifications/:notifId', (req, res) => {
+// DELETE id/notifications/:notifId
+router.delete('/:id/notifications/:notifId', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
@@ -158,8 +158,8 @@ router.delete('/my-vehicles/:id/notifications/:notifId', (req, res) => {
     res.status(204).end();
 });
 
-// POST /my-vehicles/:id/notifications/:notifId/done
-router.post('/my-vehicles/:id/notifications/:notifId/done', (req, res) => {
+// POST id/notifications/:notifId/done
+router.post('/:id/notifications/:notifId/done', (req, res) => {
     const vehicles = readVehicles();
     const vehicle = findVehicle(vehicles, req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
@@ -171,5 +171,7 @@ router.post('/my-vehicles/:id/notifications/:notifId/done', (req, res) => {
     writeVehicles(vehicles);
     res.json(notification);
 });
+
+router.use("/my-vehicles", router)
 
 module.exports = router;

@@ -120,7 +120,7 @@ const MongoAgent = {
   getAllVehicles: async function () {
     try {
       await client.connect();
-      return await db.collection("vehicles").find({}).toArray();
+      return await client.db("vehicles").collection("vehicles").find({}).toArray();
     } catch (error) {
       console.log(error);
     } finally {
@@ -130,7 +130,7 @@ const MongoAgent = {
   getVehicle: async function (id) {
     try {
       await client.connect();
-      return await db.collection("vehicles").findOne({ id: Number(id) });
+      return await client.db("vehicles").collection("vehicles").findOne({ id: Number(id) });
     } catch (error) {
       console.log(error);
     } finally {
@@ -140,7 +140,7 @@ const MongoAgent = {
   insertVehicle: async function (data) {
     try {
       await client.connect();
-      const vehicles = db.collection("vehicles");
+      const vehicles = client.db("vehicles").collection("vehicles");
       const existing = await vehicles.find({}, { projection: { id: 1 } }).toArray();
       const vehicle = {
         id: randomId(existing.map(v => v.id)),
@@ -162,7 +162,7 @@ const MongoAgent = {
   deleteVehicle: async function (id) {
     try {
       await client.connect();
-      const response = await db.collection("vehicles").deleteOne({ id: Number(id) });
+      const response = await client.db("vehicles").collection("vehicles").deleteOne({ id: Number(id) });
       return response.deletedCount;
     } catch (error) {
       console.log(error);
@@ -174,7 +174,7 @@ const MongoAgent = {
   updateVehicleKm: async function (id, km) {
     try {
       await client.connect();
-      const vehicles = db.collection("vehicles");
+      const vehicles = client.db("vehicles").collection("vehicles");
       const result = await vehicles.findOneAndUpdate(
         { id: Number(id) },
         { $set: { km: Number(km) } },
@@ -190,7 +190,7 @@ const MongoAgent = {
   addNotification: async function (vehicleId, notification) {
     try {
       await client.connect();
-      const vehicles = db.collection("vehicles");
+      const vehicles = client.db("vehicles").collection("vehicles");
       const vehicle = await vehicles.findOne({ id: Number(vehicleId) });
       if (!vehicle) return null;
       const existingIds = (vehicle.notifications || []).map(n => n.id);
@@ -209,7 +209,7 @@ const MongoAgent = {
   getNotification: async function (vehicleId, notifId) {
     try {
       await client.connect();
-      const vehicle = await db.collection("vehicles").findOne({ id: Number(vehicleId) });
+      const vehicle = await client.db("vehicles").collection("vehicles").findOne({ id: Number(vehicleId) });
       if (!vehicle) return { vehicle: null, notification: null };
       const notification = (vehicle.notifications || []).find(n => n.id === Number(notifId)) || null;
       return { vehicle, notification };
@@ -223,7 +223,7 @@ const MongoAgent = {
   updateNotification: async function (vehicleId, notifId, notification) {
     try {
       await client.connect();
-      const vehicles = db.collection("vehicles");
+      const vehicles = client.db("vehicles").collection("vehicles");
       const updated = { id: Number(notifId), ...notification };
       const result = await vehicles.updateOne(
         { id: Number(vehicleId), "notifications.id": Number(notifId) },
@@ -240,7 +240,7 @@ const MongoAgent = {
   deleteNotification: async function (vehicleId, notifId) {
     try {
       await client.connect();
-      const result = await db.collection("vehicles").updateOne(
+      const result = await client.db("vehicles").collection("vehicles").updateOne(
         { id: Number(vehicleId) },
         { $pull: { notifications: { id: Number(notifId) } } }
       );
@@ -255,7 +255,7 @@ const MongoAgent = {
   markNotificationDone: async function (vehicleId, notifId, km, data) {
     try {
       await client.connect();
-      const vehicles = db.collection("vehicles");
+      const vehicles = client.db("vehicles").collection("vehicles");
       const set = {};
       if (km !== undefined) set["notifications.$.ultimaRegistrazioneKm"] = Number(km);
       if (data !== undefined && data !== null) set["notifications.$.ultimaRegistrazioneData"] = data;

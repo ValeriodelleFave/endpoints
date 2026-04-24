@@ -1,30 +1,7 @@
 const router = require('express').Router();
-const fs = require('fs');
-const path = require('path');
-
-const DATA_FILE = path.join(__dirname, '..', 'data', 'cars.json');
+const mongo = require('../mongodb-connection');
 
 // ---------- helpers ----------
-function readVehicles() {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-}
-
-function writeVehicles(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-}
-
-function nextId(list) {
-    let id = Math.floor(Math.random() * 1000000);
-    while (list.some(el => el.id === id)) {
-        id = Math.floor(Math.random() * 1000000);
-    }
-    return id;
-}
-
-function findVehicle(vehicles, id) {
-    return vehicles.find(v => v.id === Number(id));
-}
-
 function toVehicleSummary(v) {
     return {
         id: v.id,
@@ -51,124 +28,83 @@ function sanitizeNotification(body) {
 // ---------- Vehicles ----------
 
 // GET /
-router.get('/', (req, res) => {
-    const vehicles = readVehicles();
+router.get('/', async (req, res) => {
+    const vehicles = (await mongo.getAllVehicles()) || [];
     res.json(vehicles.map(toVehicleSummary));
 });
 
 // POST /
-router.post('/', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = {
-        id: nextId(vehicles),
-        targa: req.body.targa,
-        marca: req.body.marca,
-        modello: req.body.modello,
-        specifica: req.body.specifica,
-        km: Number(req.body.km) || 0,
-        notifications: []
-    };
-    vehicles.push(vehicle);
-    writeVehicles(vehicles);
+router.post('/', async (req, res) => {
+    const vehicle = await mongo.insertVehicle(req.body);
+    if (!vehicle) return res.status(500).json({ error: 'Failed to insert vehicle' });
     res.status(201).json(vehicle);
 });
 
 // GET id
-router.get('/:id', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
+router.get('/:id', async (req, res) => {
+    const vehicle = await mongo.getVehicle(req.params.id);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
     res.json(vehicle);
 });
 
 // DELETE id
-router.delete('/:id', (req, res) => {
-    const vehicles = readVehicles();
-    const idx = vehicles.findIndex(v => v.id === Number(req.params.id));
-    if (idx === -1) return res.status(404).json({ error: 'Vehicle not found' });
-    vehicles.splice(idx, 1);
-    writeVehicles(vehicles);
+router.delete('/:id', async (req, res) => {
+    const deleted = await mongo.deleteVehicle(req.params.id);
+    if (!deleted) return res.status(404).json({ error: 'Vehicle not found' });
     res.status(204).end();
 });
 
 // PUT id/km
-router.put('/:id/km', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
+router.put('/:id/km', async (req, res) => {
+    const vehicle = await mongo.updateVehicleKm(req.params.id, req.body.km);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
-    vehicle.km = Number(req.body.km);
-    writeVehicles(vehicles);
     res.json(vehicle);
 });
 
 // ---------- Notifications ----------
 
 // POST id/notifications
-router.post('/:id/notifications', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
-    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
-    if (!Array.isArray(vehicle.notifications)) vehicle.notifications = [];
-
-    const notification = {
-        id: nextId(vehicle.notifications),
-        ...sanitizeNotification(req.body)
-    };
-    vehicle.notifications.push(notification);
-    writeVehicles(vehicles);
+router.post('/:id/notifications', async (req, res) => {
+    const notification = await mongo.addNotification(req.params.id, sanitizeNotification(req.body));
+    if (!notification) return res.status(404).json({ error: 'Vehicle not found' });
     res.status(201).json(notification);
 });
 
 // GET id/notifications/:notifId
-router.get('/:id/notifications/:notifId', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
+router.get('/:id/notifications/:notifId', async (req, res) => {
+    const { vehicle, notification } = await mongo.getNotification(req.params.id, req.params.notifId);
     if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
-    const notification = (vehicle.notifications || []).find(n => n.id === Number(req.params.notifId));
     if (!notification) return res.status(404).json({ error: 'Notification not found' });
     res.json(notification);
 });
 
 // PUT id/notifications/:notifId
-router.put('/:id/notifications/:notifId', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
-    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
-    const idx = (vehicle.notifications || []).findIndex(n => n.id === Number(req.params.notifId));
-    if (idx === -1) return res.status(404).json({ error: 'Notification not found' });
-
-    vehicle.notifications[idx] = {
-        id: vehicle.notifications[idx].id,
-        ...sanitizeNotification(req.body)
-    };
-    writeVehicles(vehicles);
-    res.json(vehicle.notifications[idx]);
+router.put('/:id/notifications/:notifId', async (req, res) => {
+    const updated = await mongo.updateNotification(
+        req.params.id,
+        req.params.notifId,
+        sanitizeNotification(req.body)
+    );
+    if (!updated) return res.status(404).json({ error: 'Vehicle or notification not found' });
+    res.json(updated);
 });
 
 // DELETE id/notifications/:notifId
-router.delete('/:id/notifications/:notifId', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
-    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
-    const idx = (vehicle.notifications || []).findIndex(n => n.id === Number(req.params.notifId));
-    if (idx === -1) return res.status(404).json({ error: 'Notification not found' });
-
-    vehicle.notifications.splice(idx, 1);
-    writeVehicles(vehicles);
+router.delete('/:id/notifications/:notifId', async (req, res) => {
+    const modified = await mongo.deleteNotification(req.params.id, req.params.notifId);
+    if (!modified) return res.status(404).json({ error: 'Vehicle or notification not found' });
     res.status(204).end();
 });
 
 // POST id/notifications/:notifId/done
-router.post('/:id/notifications/:notifId/done', (req, res) => {
-    const vehicles = readVehicles();
-    const vehicle = findVehicle(vehicles, req.params.id);
-    if (!vehicle) return res.status(404).json({ error: 'Vehicle not found' });
-    const notification = (vehicle.notifications || []).find(n => n.id === Number(req.params.notifId));
-    if (!notification) return res.status(404).json({ error: 'Notification not found' });
-
-    notification.ultimaRegistrazioneKm = req.body.km !== undefined ? Number(req.body.km) : notification.ultimaRegistrazioneKm;
-    notification.ultimaRegistrazioneData = req.body.data ?? notification.ultimaRegistrazioneData;
-    writeVehicles(vehicles);
+router.post('/:id/notifications/:notifId/done', async (req, res) => {
+    const notification = await mongo.markNotificationDone(
+        req.params.id,
+        req.params.notifId,
+        req.body.km,
+        req.body.data
+    );
+    if (!notification) return res.status(404).json({ error: 'Vehicle or notification not found' });
     res.json(notification);
 });
 

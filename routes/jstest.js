@@ -33,6 +33,4 @@ router.get("/events", (request, response) => { // Server Sent Events
     response.end();
 })
 
-router.use("/jstest", router);
-
 module.exports = router;

@@ -82,6 +82,5 @@ router.get("/articles", async (req, res) => {
     }
 });
 
-router.use("/blog", router)
 
 module.exports = router;

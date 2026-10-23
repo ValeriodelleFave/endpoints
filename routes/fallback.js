@@ -2,7 +2,7 @@ const router = require('express').Router();
 const fs = require("fs");
 
 router.get("/", (req, res) => {
-    res.send("hello!");
+    res.send("Fallback page!");
 });
 
 router.get("/favicon.ico", (req, res) => {
@@ -10,7 +10,5 @@ router.get("/favicon.ico", (req, res) => {
     res.writeHead(200, {'Content-Type': 'image/x-icon' });
     res.end(img, 'binary');
 });
-
-router.use("/", router)
 
 module.exports = router;

@@ -108,6 +108,4 @@ router.post('/:id/notifications/:notifId/done', async (req, res) => {
     res.json(notification);
 });
 
-router.use("/my-vehicles", router)
-
 module.exports = router;

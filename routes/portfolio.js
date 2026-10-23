@@ -48,6 +48,4 @@ router.get("/skills", (req, res) => {
     res.send(require("../data/skills.json"));
 });
 
-router.use("/portfolio", router)
-
 module.exports = router;

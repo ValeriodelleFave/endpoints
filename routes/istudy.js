@@ -24,6 +24,4 @@ router.get("/lesson", (req, res) => {
     res.json("Hello World");
 });
 
-router.use("/istudy", router)
-
 module.exports = router;
